@@ -29,7 +29,7 @@ public class CaptureManagerFrameGrabberSession {
     private byte[] arrayByteBuffer = null;
     private BufferedImage bufferedImage = null;
 
-    private ISampleGrabberCall simpleGrabberCall = null;
+    private ISampleGrabberCall sampleGrabberCall = null;
 
     private SampleModel sampleModel = null;
 
@@ -89,7 +89,7 @@ public class CaptureManagerFrameGrabberSession {
                 .orElse(null);
 
         if (sinkFactory == null) {
-            LOG.error("Could not find SampleGrabberCallbackSinkFactory");
+            LOG.error("Could not find SampleGrabberCallSinkFactory");
             return false;
         }
 
@@ -111,12 +111,12 @@ public class CaptureManagerFrameGrabberSession {
             LOG.error("Could not find valid value part GUID in sink factory = {}", sinkFactory);
         }
 
-        final ISampleGrabberCallSinkFactory sampleGrabberCallbackSinkFactory = sinkControl.createSampleGrabberCallSinkFactory(
+        final ISampleGrabberCallSinkFactory sampleGrabberCallSinkFactory = sinkControl.createSampleGrabberCallSinkFactory(
                 sinkGUID
         );
 
-        if (sampleGrabberCallbackSinkFactory == null) {
-            LOG.error("Could not create ISampleGrabberCallbackSinkFactory");
+        if (sampleGrabberCallSinkFactory == null) {
+            LOG.error("Could not create ISampleGrabberCallSinkFactory");
             return false;
         }
 
@@ -142,18 +142,18 @@ public class CaptureManagerFrameGrabberSession {
                 new int[]{2, 1, 0} // Try {1,2,3}, {3,2,1}, {0,1,2}
         );
 
-        simpleGrabberCall = sampleGrabberCallbackSinkFactory.createOutputNode(
+        sampleGrabberCall = sampleGrabberCallSinkFactory.createOutputNode(
                 MFMediaType_Video,
                 videoFormat,
                 bufferSizeBytes
         );
 
 
-        if (simpleGrabberCall == null) {
-            LOG.error("Could not create ISampleGrabberCallback");
+        if (sampleGrabberCall == null) {
+            LOG.error("Could not create ISampleGrabberCall");
             return false;
         }
-        final IStreamNode streamNode = simpleGrabberCall.getStreamNode();
+        final IStreamNode streamNode = sampleGrabberCall.getStreamNode();
 
         if (streamNode == null) {
             LOG.error("Could not create streamNode");
@@ -187,8 +187,8 @@ public class CaptureManagerFrameGrabberSession {
 
         session.addUpdateStateListener(new IUpdateStateListener() {
             @Override
-            public void invoke(int aCallbackEventCode, int aSessionDescriptor) {
-                LOG.info("invoke with (aCallbackEventCode, aSessionDescriptor) = ({}, {})", aCallbackEventCode, aSessionDescriptor);
+            public void invoke(int aCallEventCode, int aSessionDescriptor) {
+                LOG.info("invoke with (aCallEventCode, aSessionDescriptor) = ({}, {})", aCallEventCode, aSessionDescriptor);
             }
         });
 
@@ -285,7 +285,7 @@ public class CaptureManagerFrameGrabberSession {
 
 
     public synchronized int updateDirectBuffer() {
-        return simpleGrabberCall.readData(directBuffer);
+        return sampleGrabberCall.readData(directBuffer);
     }
 
     public boolean isOpen() {
