@@ -21,8 +21,7 @@
         
         <driver.webcam-capture.version>0.3.13-SNAPSHOT</driver.webcam-capture.version>
         <driver.aalto-xml.version>1.3.0</driver.aalto-xml.version>
-        <driver.commons-lang3.version>3.12.0</driver.commons-lang3.version>
-        
+
         <driver.javafx.version>16</driver.javafx.version>
 
         <!-- Plugins versions -->
@@ -287,6 +286,16 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${driver.maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <release>${java.version}</release><!-- Ensure Java version compatibility by checking APIs used -->
+                </configuration>
             </plugin>
         </plugins>
     </build>
