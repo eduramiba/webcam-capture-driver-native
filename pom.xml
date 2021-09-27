@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <groupId>com.github.eduramiba</groupId>
     <artifactId>webcam-capture-driver-native</artifactId>
@@ -18,11 +18,11 @@
 
         <!-- Dependencies versions -->
         <driver.slf4j.version>1.7.32</driver.slf4j.version>
-        
+
         <driver.webcam-capture.version>0.3.13-SNAPSHOT</driver.webcam-capture.version>
         <driver.aalto-xml.version>1.3.0</driver.aalto-xml.version>
 
-        <driver.javafx.version>17</driver.javafx.version>
+        <driver.javafx.version>17.0.0.1</driver.javafx.version>
 
         <!-- Plugins versions -->
         <driver.maven-compiler-plugin.version>3.8.1</driver.maven-compiler-plugin.version>
@@ -42,11 +42,11 @@
         <driver.modernizer-plugin.version>2.3.0</driver.modernizer-plugin.version>
         <driver.versions-maven-plugin.version>2.8.1</driver.versions-maven-plugin.version>
         <driver.help-maven-plugin.version>3.2.0</driver.help-maven-plugin.version>
-        <driver.maven-enforcer-plugin.version>3.0.0-M2</driver.maven-enforcer-plugin.version>
-        <driver.maven-enforcer-plugin.extra-rules.version>1.3</driver.maven-enforcer-plugin.extra-rules.version>
+        <driver.maven-enforcer-plugin.version>3.0.0</driver.maven-enforcer-plugin.version>
+        <driver.maven-enforcer-plugin.extra-rules.version>1.4</driver.maven-enforcer-plugin.extra-rules.version>
         <driver.errorprone-plugin.version>2.7.1</driver.errorprone-plugin.version>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -75,7 +75,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.github.sarxos</groupId>
@@ -86,7 +86,7 @@
             <groupId>com.fasterxml</groupId>
             <artifactId>aalto-xml</artifactId>
         </dependency>
-            
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
@@ -110,7 +110,7 @@
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
-                        <release>${java.version}</release><!-- Ensure Java version compatibility by checking APIs used -->
+                        <release>${java.version}</release>                        <!-- Ensure Java version compatibility by checking APIs used -->
                     </configuration>
                 </plugin>
                 <plugin>
@@ -294,7 +294,7 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
-                    <release>${java.version}</release><!-- Ensure Java version compatibility by checking APIs used -->
+                    <release>${java.version}</release>                    <!-- Ensure Java version compatibility by checking APIs used -->
                 </configuration>
             </plugin>
         </plugins>
@@ -315,7 +315,7 @@
                         <configuration>
                             <source>${java.version}</source>
                             <target>${java.version}</target>
-                            <release>${java.version}</release><!-- Ensure Java version compatibility by checking APIs used -->
+                            <release>${java.version}</release>                            <!-- Ensure Java version compatibility by checking APIs used -->
                             <compilerArgs>
                                 <arg>-XDcompilePolicy=simple</arg>
                                 <arg>-Xplugin:ErrorProne</arg>
@@ -352,4 +352,11 @@
             </build>
         </profile>
     </profiles>
+
+    <repositories>
+        <repository>
+            <id>Sonatype OSS Snapshot Repository</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
 </project>
