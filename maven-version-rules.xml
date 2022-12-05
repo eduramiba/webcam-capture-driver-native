@@ -63,5 +63,11 @@
                 <ignoreVersion>9.0.0</ignoreVersion>
             </ignoreVersions>
         </rule>
+        <rule groupId="ch.qos.logback" artifactId="*">
+            <ignoreVersions>
+                <ignoreVersion type="regex">.*-groovyless</ignoreVersion>
+            </ignoreVersions>
+        </rule>
     </rules>
 </ruleset>
+
