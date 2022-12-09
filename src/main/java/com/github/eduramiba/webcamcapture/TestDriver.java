@@ -1,7 +1,7 @@
 package com.github.eduramiba.webcamcapture;
 
+import com.github.eduramiba.webcamcapture.drivers.NativeDriver;
 import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceWithBufferOperations;
-import com.github.eduramiba.webcamcapture.drivers.capturemanager.CaptureManagerDriver;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamDevice;
 import java.util.concurrent.Executors;
@@ -17,22 +17,22 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestCaptureManagerDriver extends Application {
+public class TestDriver extends Application {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TestCaptureManagerDriver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TestDriver.class);
 
     public static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(4);
 
     public static void main(String[] args) {
-        Webcam.setDriver(new CaptureManagerDriver());
+        Webcam.setDriver(new NativeDriver());
 
         launch(args);
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-        ImageView imageView = new ImageView();
-        HBox root = new HBox();
+        final ImageView imageView = new ImageView();
+        final HBox root = new HBox();
         root.getChildren().add(imageView);
 
         Webcam.getWebcams().stream()
@@ -46,8 +46,12 @@ public class TestCaptureManagerDriver extends Application {
                     final WritableImage fxImage = new WritableImage(width, height);
                     Platform.runLater(() -> {
                         imageView.setImage(fxImage);
+                        stage.setWidth(width);
+                        stage.setHeight(height);
+                        stage.centerOnScreen();
                     });
 
+                    camera.getLock().disable();
                     camera.open();
                     if (device instanceof WebcamDeviceWithBufferOperations) {
                         EXECUTOR.scheduleAtFixedRate(() -> {
@@ -56,13 +60,15 @@ public class TestCaptureManagerDriver extends Application {
                     }
                 });
 
+        stage.setOnCloseRequest(t -> {
+            Platform.exit();
+            System.exit(0);
+        });
+
         // Create the Scene
-        Scene scene = new Scene(root);
-        // Add the scene to the Stage
+        final Scene scene = new Scene(root);
         stage.setScene(scene);
-        // Set the title of the Stage
-        stage.setTitle("Displaying an Image");
-        // Display the Stage
+        stage.setTitle("Webcam example");
         stage.show();
     }
 }
