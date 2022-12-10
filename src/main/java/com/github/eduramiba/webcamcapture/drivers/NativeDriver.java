@@ -15,9 +15,9 @@ public class NativeDriver implements WebcamDriver {
     public NativeDriver() {
         final String os = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
 
-        if ((os.indexOf("mac") >= 0) || (os.indexOf("darwin") >= 0)) {
+        if ((os.contains("mac")) || (os.contains("darwin"))) {
             this.driver = new AVFDriver();
-        } else if (os.indexOf("win") >= 0) {
+        } else if (os.contains("win")) {
             this.driver = new CaptureManagerDriver();
         } else {
             throw new IllegalStateException("Unsupported OS = " + os);
