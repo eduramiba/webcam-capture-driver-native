@@ -30,8 +30,8 @@ import java.io.*;
  * JAR archive. These libraries usualy contain implementation of some methods in
  * native code (using JNI - Java Native Interface).
  *
- * @see http://adamheinrich.com/blog/2012/how-to-load-native-jni-library-from-jar
- * @see https://github.com/adamheinrich/native-utils
+ * @see <a href="https://www.adamh.cz/blog/2012/12/how-to-load-native-jni-library-from-jar/">How to Load Native JNI Library from JAR</a>
+ * @see <a href="https://github.com/adamheinrich/native-utils">GitHub adamheinrich/native-utils</a>
  *
  */
 public class NativeUtils {
