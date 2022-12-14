@@ -26,10 +26,15 @@ public class NativeDriver implements WebcamDriver {
         } else {
             // TODO support at least Linux and Raspberry
             LOG.warn("Unsupported OS {}. No devices will be returned!", os);
-            this.driver = new NativeDriver() {
+            this.driver = new WebcamDriver() {
                 @Override
                 public List<WebcamDevice> getDevices() {
                     return Collections.emptyList();
+                }
+
+                @Override
+                public boolean isThreadSafe() {
+                    return true;
                 }
             };
         }
