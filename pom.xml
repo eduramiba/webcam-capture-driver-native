@@ -19,7 +19,7 @@
         <!-- Dependencies versions -->
         <driver.slf4j.version>2.0.6</driver.slf4j.version>
 
-        <driver.webcam-capture.version>0.3.13-SNAPSHOT</driver.webcam-capture.version>
+        <driver.webcam-capture.version>0.3.13-eduramiba-SNAPSHOT</driver.webcam-capture.version>
         <driver.aalto-xml.version>1.3.2</driver.aalto-xml.version>
         <driver.jna.version>5.12.1</driver.jna.version>
 
@@ -41,7 +41,7 @@
         <driver.maven-failsafe-plugin.version>2.22.2</driver.maven-failsafe-plugin.version>
         <driver.maven-exec-plugin.version>3.1.0</driver.maven-exec-plugin.version>
         <driver.modernizer-plugin.version>2.5.0</driver.modernizer-plugin.version>
-        <driver.versions-maven-plugin.version>2.13.0</driver.versions-maven-plugin.version>
+        <driver.versions-maven-plugin.version>2.14.0</driver.versions-maven-plugin.version>
         <driver.help-maven-plugin.version>3.3.0</driver.help-maven-plugin.version>
         <driver.maven-enforcer-plugin.version>3.1.0</driver.maven-enforcer-plugin.version>
         <driver.maven-enforcer-plugin.extra-rules.version>1.6.1</driver.maven-enforcer-plugin.extra-rules.version>
