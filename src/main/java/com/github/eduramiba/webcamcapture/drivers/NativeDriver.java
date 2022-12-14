@@ -1,14 +1,18 @@
 package com.github.eduramiba.webcamcapture.drivers;
 
-import java.util.List;
-import java.util.Locale;
-
 import com.github.eduramiba.webcamcapture.drivers.avfoundation.driver.AVFDriver;
 import com.github.eduramiba.webcamcapture.drivers.capturemanager.CaptureManagerDriver;
 import com.github.sarxos.webcam.WebcamDevice;
 import com.github.sarxos.webcam.WebcamDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public class NativeDriver implements WebcamDriver {
+    private static final Logger LOG = LoggerFactory.getLogger(NativeDriver.class);
 
     private final WebcamDriver driver;
 
@@ -20,7 +24,14 @@ public class NativeDriver implements WebcamDriver {
         } else if (os.contains("win")) {
             this.driver = new CaptureManagerDriver();
         } else {
-            throw new IllegalStateException("Unsupported OS = " + os);
+            // TODO support at least Linux and Raspberry
+            LOG.warn("Unsupported OS {}. No devices will be returned!", os);
+            this.driver = new NativeDriver() {
+                @Override
+                public List<WebcamDevice> getDevices() {
+                    return Collections.emptyList();
+                }
+            };
         }
     }
 
