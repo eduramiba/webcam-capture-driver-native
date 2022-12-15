@@ -19,7 +19,7 @@
         <!-- Dependencies versions -->
         <driver.slf4j.version>2.0.6</driver.slf4j.version>
 
-        <driver.webcam-capture.version>0.3.13-eduramiba-SNAPSHOT</driver.webcam-capture.version>
+        <driver.webcam-capture.version>0.3.13-SNAPSHOT</driver.webcam-capture.version>
         <driver.aalto-xml.version>1.3.2</driver.aalto-xml.version>
         <driver.jna.version>5.12.1</driver.jna.version>
 
@@ -54,6 +54,7 @@
                 <groupId>com.github.sarxos</groupId>
                 <artifactId>webcam-capture</artifactId>
                 <version>${driver.webcam-capture.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
