@@ -7,9 +7,11 @@ import javafx.scene.image.WritableImage;
 
 public interface WebcamDeviceWithBufferOperations extends WebcamDevice {
 
-    BufferedImage getImage(final ByteBuffer byteBuffer);
+    BufferedImage getImage(ByteBuffer byteBuffer);
 
-    boolean updateFXIMage(final WritableImage writableImage, final ByteBuffer byteBuffer);
+    boolean updateFXIMage(WritableImage writableImage);
 
-    boolean updateFXIMage(final WritableImage writableImage);
+    boolean updateFXIMage(WritableImage writableImage, long lastFrameTimestamp);
+
+    long getLastFrameTimestamp();
 }

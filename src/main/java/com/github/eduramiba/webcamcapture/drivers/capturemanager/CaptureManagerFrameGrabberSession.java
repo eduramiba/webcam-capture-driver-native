@@ -37,6 +37,7 @@ public class CaptureManagerFrameGrabberSession {
     private int videoWidth = -1;
     private int videoHeight = -1;
     private int bufferSizeBytes = -1;
+    private long lastFrameTimestamp = -1;
 
     public boolean init(
             final CaptureManagerSource source,
@@ -223,6 +224,10 @@ public class CaptureManagerFrameGrabberSession {
         session.closeSession();
     }
 
+    public long getLastFrameTimestamp() {
+        return lastFrameTimestamp;
+    }
+
     public synchronized BufferedImage toBufferedImage() {
         if (!isOpen()) {
             return null;
@@ -249,7 +254,7 @@ public class CaptureManagerFrameGrabberSession {
         return bufferedImage;
     }
 
-    public synchronized boolean updateFXIMage(final WritableImage writableImage) {
+    public synchronized boolean updateFXIMage(final WritableImage writableImage, long lastFrameTimestamp) {
         if (!isOpen()) {
             return false;
         }
@@ -257,6 +262,10 @@ public class CaptureManagerFrameGrabberSession {
         final int sizeData = updateDirectBuffer();
 
         if (sizeData <= 0) {
+            return false;
+        }
+
+        if (this.lastFrameTimestamp <= lastFrameTimestamp) {
             return false;
         }
 
@@ -285,7 +294,12 @@ public class CaptureManagerFrameGrabberSession {
 
 
     public synchronized int updateDirectBuffer() {
-        return sampleGrabberCall.readData(directBuffer);
+        final int readSize = sampleGrabberCall.readData(directBuffer);
+        if (readSize > 0) {
+            lastFrameTimestamp = System.currentTimeMillis();
+        }
+
+        return readSize;
     }
 
     public boolean isOpen() {

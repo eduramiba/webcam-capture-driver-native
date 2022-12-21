@@ -54,8 +54,17 @@ public class TestDriver extends Application {
                     camera.getLock().disable();
                     camera.open();
                     if (device instanceof WebcamDeviceWithBufferOperations) {
-                        EXECUTOR.scheduleAtFixedRate(() -> {
-                            ((WebcamDeviceWithBufferOperations) device).updateFXIMage(fxImage);
+                        final WebcamDeviceWithBufferOperations dev = ((WebcamDeviceWithBufferOperations) device);
+                        EXECUTOR.scheduleAtFixedRate(new Runnable() {
+                            private long lastFrameTimestamp = -1;
+
+                            @Override
+                            public void run() {
+                                if (dev.updateFXIMage(fxImage, lastFrameTimestamp)) {
+                                    lastFrameTimestamp = dev.getLastFrameTimestamp();
+                                }
+
+                            }
                         }, 0, 16, TimeUnit.MILLISECONDS);
                     }
                 });

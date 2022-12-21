@@ -144,6 +144,15 @@ public class CaptureManagerVideoDevice implements WebcamDevice, WebcamDevice.FPS
         return session != null && session.isOpen();
     }
 
+    @Override
+    public long getLastFrameTimestamp() {
+        if (isOpen()) {
+            return session.getLastFrameTimestamp();
+        }
+
+        return -1;
+    }
+
     private static Pair<CaptureManagerStreamDescriptor, CaptureManagerMediaType> findBestMediaTypeInStreams(
             final Collection<CaptureManagerStreamDescriptor> videoStreams,
             final Dimension resolution
@@ -231,9 +240,9 @@ public class CaptureManagerVideoDevice implements WebcamDevice, WebcamDevice.FPS
     }
 
     @Override
-    public boolean updateFXIMage(WritableImage writableImage, ByteBuffer byteBuffer) {
+    public boolean updateFXIMage(final WritableImage writableImage, final long lastFrameTimestamp) {
         if (isOpen()) {
-            session.updateFXIMage(writableImage, byteBuffer);
+            session.updateFXIMage(writableImage, lastFrameTimestamp);
             return true;
         }
 
@@ -242,11 +251,7 @@ public class CaptureManagerVideoDevice implements WebcamDevice, WebcamDevice.FPS
 
     @Override
     public boolean updateFXIMage(WritableImage writableImage) {
-        if (isOpen()) {
-            return session.updateFXIMage(writableImage);
-        }
-
-        return false;
+        return updateFXIMage(writableImage, -1);
     }
 
     @Override

@@ -36,6 +36,7 @@ public class AVFVideoDevice implements WebcamDevice, WebcamDevice.FPSSource, Web
     private ByteBuffer imgBuffer = null;
     private byte[] arrayByteBuffer = null;
     private BufferedImage bufferedImage = null;
+    private long lastFrameTimestamp = -1;
 
     public AVFVideoDevice(final int deviceIndex, final String id, final String name, final Collection<Dimension> resolutions) {
         this.deviceIndex = deviceIndex;
@@ -159,6 +160,11 @@ public class AVFVideoDevice implements WebcamDevice, WebcamDevice.FPSSource, Web
         return open;
     }
 
+    @Override
+    public long getLastFrameTimestamp() {
+        return lastFrameTimestamp;
+    }
+
     public static final int MAX_FPS = 30;
 
     @Override
@@ -217,18 +223,23 @@ public class AVFVideoDevice implements WebcamDevice, WebcamDevice.FPSSource, Web
     }
 
     @Override
-    public synchronized boolean updateFXIMage(WritableImage writableImage) {
+    public boolean updateFXIMage(WritableImage writableImage) {
+        return updateFXIMage(writableImage, -1);
+    }
+
+    @Override
+    public synchronized boolean updateFXIMage(final WritableImage writableImage, final long lastFrameTimestamp) {
+        return updateFXIMage(writableImage, imgBuffer, lastFrameTimestamp);
+    }
+
+    private boolean updateFXIMage(final WritableImage writableImage, final ByteBuffer byteBuffer, final long lastFrameTimestamp) {
         if (!isOpen()) {
             return false;
         }
 
         updateBuffer();
 
-        return updateFXIMage(writableImage, imgBuffer);
-    }
-
-    public boolean updateFXIMage(final WritableImage writableImage, final ByteBuffer byteBuffer) {
-        if (!isOpen()) {
+        if (this.lastFrameTimestamp <= lastFrameTimestamp) {
             return false;
         }
 
@@ -249,9 +260,11 @@ public class AVFVideoDevice implements WebcamDevice, WebcamDevice.FPSSource, Web
 
     private void updateBuffer() {
         if (LibVideoCapture.INSTANCE.vcavf_has_new_frame(deviceIndex)) {
-            LibVideoCapture.INSTANCE.vcavf_grab_frame(
+            if (LibVideoCapture.INSTANCE.vcavf_grab_frame(
                 deviceIndex,
-                Native.getDirectBufferPointer(imgBuffer), imgBuffer.capacity());
+                Native.getDirectBufferPointer(imgBuffer), imgBuffer.capacity())) {
+                lastFrameTimestamp = System.currentTimeMillis();
+            };
         }
     }
 

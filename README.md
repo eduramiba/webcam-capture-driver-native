@@ -53,29 +53,38 @@ public class TestDriver extends Application {
         root.getChildren().add(imageView);
 
         Webcam.getWebcams().stream()
-            .findFirst()
-            .ifPresent((final Webcam camera) -> {
-                final WebcamDevice device = camera.getDevice();
-                LOG.info("Found camera: {}, device = {}", camera, device);
+                .findFirst()
+                .ifPresent((final Webcam camera) -> {
+                    final WebcamDevice device = camera.getDevice();
+                    LOG.info("Found camera: {}, device = {}", camera, device);
 
-                final int width = device.getResolution().width;
-                final int height = device.getResolution().height;
-                final WritableImage fxImage = new WritableImage(width, height);
-                Platform.runLater(() -> {
-                    imageView.setImage(fxImage);
-                    stage.setWidth(width);
-                    stage.setHeight(height);
-                    stage.centerOnScreen();
+                    final int width = device.getResolution().width;
+                    final int height = device.getResolution().height;
+                    final WritableImage fxImage = new WritableImage(width, height);
+                    Platform.runLater(() -> {
+                        imageView.setImage(fxImage);
+                        stage.setWidth(width);
+                        stage.setHeight(height);
+                        stage.centerOnScreen();
+                    });
+
+                    camera.getLock().disable();
+                    camera.open();
+                    if (device instanceof WebcamDeviceWithBufferOperations) {
+                        final WebcamDeviceWithBufferOperations dev = ((WebcamDeviceWithBufferOperations) device);
+                        EXECUTOR.scheduleAtFixedRate(new Runnable() {
+                            private long lastFrameTimestamp = -1;
+
+                            @Override
+                            public void run() {
+                                if (dev.updateFXIMage(fxImage, lastFrameTimestamp)) {
+                                    lastFrameTimestamp = dev.getLastFrameTimestamp();
+                                }
+
+                            }
+                        }, 0, 16, TimeUnit.MILLISECONDS);
+                    }
                 });
-
-                camera.getLock().disable();
-                camera.open();
-                if (device instanceof WebcamDeviceWithBufferOperations) {
-                    EXECUTOR.scheduleAtFixedRate(() -> {
-                        ((WebcamDeviceWithBufferOperations) device).updateFXIMage(fxImage);
-                    }, 0, 16, TimeUnit.MILLISECONDS);
-                }
-            });
 
         stage.setOnCloseRequest(t -> {
             Platform.exit();
@@ -89,7 +98,6 @@ public class TestDriver extends Application {
         stage.show();
     }
 }
-
 ```
 
 # Future work
