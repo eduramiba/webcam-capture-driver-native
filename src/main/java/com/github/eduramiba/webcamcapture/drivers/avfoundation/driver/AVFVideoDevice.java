@@ -10,9 +10,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceWithBufferOperations;
-import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceWithId;
-import com.github.sarxos.webcam.WebcamDevice;
+import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceExtended;
 import com.sun.jna.Native;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.PixelWriter;
@@ -22,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.github.eduramiba.webcamcapture.drivers.avfoundation.driver.LibVideoCapture.STATUS_AUTHORIZED;
 
-public class AVFVideoDevice implements WebcamDevice, WebcamDevice.FPSSource, WebcamDevice.BufferAccess, WebcamDeviceWithId, WebcamDeviceWithBufferOperations {
+public class AVFVideoDevice implements WebcamDeviceExtended {
     private static final Logger LOG = LoggerFactory.getLogger(AVFVideoDevice.class);
 
     private final int deviceIndex;

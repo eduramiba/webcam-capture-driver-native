@@ -1,13 +1,11 @@
 package com.github.eduramiba.webcamcapture.drivers.capturemanager;
 
-import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceWithBufferOperations;
-import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceWithId;
+import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceExtended;
 import com.github.eduramiba.webcamcapture.drivers.capturemanager.model.CaptureManagerMediaType;
 import com.github.eduramiba.webcamcapture.drivers.capturemanager.model.CaptureManagerSource;
 import com.github.eduramiba.webcamcapture.drivers.capturemanager.model.CaptureManagerStreamDescriptor;
 import com.github.eduramiba.webcamcapture.drivers.capturemanager.model.sinks.CaptureManagerSinkFactory;
 import com.github.eduramiba.webcamcapture.utils.Pair;
-import com.github.sarxos.webcam.WebcamDevice;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
@@ -19,7 +17,7 @@ import javafx.scene.image.WritableImage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CaptureManagerVideoDevice implements WebcamDevice, WebcamDevice.FPSSource, WebcamDevice.BufferAccess, WebcamDeviceWithId, WebcamDeviceWithBufferOperations {
+public class CaptureManagerVideoDevice implements WebcamDeviceExtended {
 
     private static final Logger LOG = LoggerFactory.getLogger(CaptureManagerVideoDevice.class);
 
