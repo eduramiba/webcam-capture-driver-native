@@ -9,10 +9,10 @@ import com.github.eduramiba.webcamcapture.utils.Pair;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
+
+import com.github.eduramiba.webcamcapture.utils.Utils;
 import javafx.scene.image.WritableImage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,31 +185,47 @@ public class CaptureManagerVideoDevice implements WebcamDeviceExtended {
     }
 
     private static CaptureManagerMediaType findBestMediaTypeInList(final Collection<CaptureManagerMediaType> mediaTypes, final Dimension resolution) {
-        int maxPixels = 0;
-        CaptureManagerMediaType bestMediaType = null;
+        if (resolution == null) {
+            return null;
+        }
+
+        final List<CaptureManagerMediaType> mediaTypesForResolution = new ArrayList<>();
 
         for (CaptureManagerMediaType mediaType : mediaTypes) {
             if (mediaType == null) {
                 continue;
             }
 
-            if (resolution != null && (resolution.width != mediaType.getWidth() || resolution.height != mediaType.getHeight())) {
+            if (resolution.width != mediaType.getWidth() || resolution.height != mediaType.getHeight()) {
                 continue;
             }
 
-            final int pixels = mediaType.getWidth() * mediaType.getHeight();
+            mediaTypesForResolution.add(mediaType);
+        }
 
-            if (pixels > maxPixels) {
-                maxPixels = pixels;
-                bestMediaType = mediaType;
-            } else if (pixels == maxPixels && mediaType.getSubType().contains("NV12")) {//Prefer NV12
-                bestMediaType = mediaType;
-            } else if (pixels == maxPixels && (mediaType.getSubType().contains("YUV") || mediaType.getSubType().contains("YUY"))) {//Prefer YUV/YUY if no NV12
-                bestMediaType = mediaType;
+        LOG.info("Media types for resolution {}x{} = {}", resolution.width, resolution.height, mediaTypesForResolution);
+
+        if (mediaTypesForResolution.isEmpty()) {
+            return null;
+        }
+
+        //Prefer NV12 (decodes faster with GPU support), then YUV and MJPG:
+        return Utils.coalesce(
+                findMediaTypeContaining(mediaTypesForResolution, "NV12"),
+                findMediaTypeContaining(mediaTypesForResolution, "YUV"),
+                findMediaTypeContaining(mediaTypesForResolution, "MJPG"),
+                mediaTypesForResolution.get(0)
+        );
+    }
+
+    private static CaptureManagerMediaType findMediaTypeContaining(final Collection<CaptureManagerMediaType> mediaTypes, final String subType) {
+        for (CaptureManagerMediaType mediaType : mediaTypes) {
+            if(mediaType.getSubType().contains(subType)) {
+                return mediaType;
             }
         }
 
-        return bestMediaType;
+        return null;
     }
 
     public static final int MAX_FPS = 30;
