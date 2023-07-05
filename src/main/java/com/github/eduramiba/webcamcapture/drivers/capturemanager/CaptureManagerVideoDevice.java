@@ -204,7 +204,7 @@ public class CaptureManagerVideoDevice implements WebcamDeviceExtended {
                 bestMediaType = mediaType;
             } else if (pixels == maxPixels && mediaType.getSubType().contains("NV12")) {//Prefer NV12
                 bestMediaType = mediaType;
-            } else if (pixels == maxPixels && mediaType.getSubType().contains("YUV")) {//Prefer YUV if no NV12
+            } else if (pixels == maxPixels && (mediaType.getSubType().contains("YUV") || mediaType.getSubType().contains("YUY"))) {//Prefer YUV/YUY if no NV12
                 bestMediaType = mediaType;
             }
         }
