@@ -45,5 +45,7 @@ public interface LibVideoCapture extends Library {
 
     int vcavf_frame_height(int deviceIndex);
 
+    int vcavf_frame_bytes_per_row(int deviceIndex);
+
     boolean vcavf_grab_frame(int deviceIndex, Pointer pointer, int availableBytes);
 }

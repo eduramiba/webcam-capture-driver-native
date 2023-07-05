@@ -31,6 +31,7 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
 
     //State:
     private boolean open = false;
+    private int bytesPerRow = -1;
     private ByteBuffer imgBuffer = null;
     private byte[] arrayByteBuffer = null;
     private BufferedImage bufferedImage = null;
@@ -128,12 +129,9 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
             return;
         }
 
-        final var bufferSizeBytes = width * height * 3;
-
+    
         this.open = true;
-        this.imgBuffer = ByteBuffer.allocateDirect(bufferSizeBytes);
         this.bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
-        this.arrayByteBuffer = new byte[imgBuffer.capacity()];
 
         LOG.info("Device {} opened successfully", id);
     }
@@ -143,6 +141,7 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
         if (isOpen()) {
             LibVideoCapture.INSTANCE.vcavf_stop_capture(deviceIndex);
             open = false;
+            bytesPerRow = -1;
             imgBuffer = null;
             arrayByteBuffer = null;
             bufferedImage = null;
@@ -227,37 +226,46 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
 
     @Override
     public synchronized boolean updateFXIMage(final WritableImage writableImage, final long lastFrameTimestamp) {
-        return updateFXIMage(writableImage, imgBuffer, lastFrameTimestamp);
-    }
-
-    private boolean updateFXIMage(final WritableImage writableImage, final ByteBuffer byteBuffer, final long lastFrameTimestamp) {
         if (!isOpen()) {
             return false;
         }
 
         updateBuffer();
 
-        if (this.lastFrameTimestamp <= lastFrameTimestamp) {
+        if (imgBuffer == null) {
             return false;
         }
 
+        if (this.lastFrameTimestamp <= lastFrameTimestamp) {
+            return false;
+        }
+        
         final int videoWidth = resolution.width;
         final int videoHeight = resolution.height;
-
+        
         final PixelWriter pw = writableImage.getPixelWriter();
-
-        byteBuffer.mark();
-        byteBuffer.position(0);
+        
+        imgBuffer.mark();
+        imgBuffer.position(0);
         pw.setPixels(
             0, 0, videoWidth, videoHeight,
-            PixelFormat.getByteRgbInstance(), byteBuffer, 3 * videoWidth
+            PixelFormat.getByteRgbInstance(), imgBuffer, bytesPerRow
         );
-
+            
         return true;
     }
 
     private void updateBuffer() {
         if (LibVideoCapture.INSTANCE.vcavf_has_new_frame(deviceIndex)) {
+            if (imgBuffer == null) {
+                // Init buffer if still not initialized:
+                this.bytesPerRow = LibVideoCapture.INSTANCE.vcavf_frame_bytes_per_row(deviceIndex);
+
+                final var bufferSizeBytes = bytesPerRow * resolution.height;
+                this.imgBuffer = ByteBuffer.allocateDirect(bufferSizeBytes);
+                this.arrayByteBuffer = new byte[imgBuffer.capacity()];
+            }
+
             if (LibVideoCapture.INSTANCE.vcavf_grab_frame(
                 deviceIndex,
                 Native.getDirectBufferPointer(imgBuffer), imgBuffer.capacity())) {
@@ -267,7 +275,7 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
     }
 
     private void updateBufferedImage() {
-        if (!isOpen()) {
+        if (!isOpen() || imgBuffer == null) {
             return;
         }
 
@@ -275,7 +283,7 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
         final int videoHeight = resolution.height;
 
         final ComponentSampleModel sampleModel = new ComponentSampleModel(
-            DataBuffer.TYPE_BYTE, videoWidth, videoHeight, 3, videoWidth * 3,
+            DataBuffer.TYPE_BYTE, videoWidth, videoHeight, 3, bytesPerRow,
             new int[]{0, 1, 2}
         );
 
