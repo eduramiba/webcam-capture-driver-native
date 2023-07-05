@@ -36,6 +36,7 @@ public class CaptureManagerFrameGrabberSession {
     private ISession session = null;
     private int videoWidth = -1;
     private int videoHeight = -1;
+    private int bytesPerRow = -1;
     private int bufferSizeBytes = -1;
     private long lastFrameTimestamp = -1;
 
@@ -126,12 +127,12 @@ public class CaptureManagerFrameGrabberSession {
 
         final String videoFormat = MFVideoFormat_RGB32;
 
-        final int stride = CaptureManager.getInstance().getICaptureManagerControl().getStrideForBitmapInfoHeader(
+        this.bytesPerRow = Math.abs(CaptureManager.getInstance().getICaptureManagerControl().getStrideForBitmapInfoHeader(
                 videoFormat,
                 videoWidth
-        );
+        ));
 
-        bufferSizeBytes = Math.abs(stride) * videoWidth;
+        bufferSizeBytes = bytesPerRow * videoHeight;
 
         directBuffer = ByteBuffer.allocateDirect(bufferSizeBytes);
         arrayByteBuffer = new byte[bufferSizeBytes];
@@ -139,7 +140,7 @@ public class CaptureManagerFrameGrabberSession {
         bufferedImage = new BufferedImage(videoWidth, videoHeight, BufferedImage.TYPE_INT_BGR);
 
         sampleModel = new ComponentSampleModel(
-                DataBuffer.TYPE_BYTE, videoWidth, videoHeight, 4, videoWidth * 4,
+                DataBuffer.TYPE_BYTE, videoWidth, videoHeight, 4, bytesPerRow,
                 new int[]{2, 1, 0} // Try {1,2,3}, {3,2,1}, {0,1,2}
         );
 
@@ -279,7 +280,7 @@ public class CaptureManagerFrameGrabberSession {
 
         byteBuffer.mark();
         byteBuffer.position(0);
-        pw.setPixels(0, 0, videoWidth, videoHeight, PixelFormat.getByteBgraPreInstance(), byteBuffer, 4 * videoWidth);
+        pw.setPixels(0, 0, videoWidth, videoHeight, PixelFormat.getByteBgraPreInstance(), byteBuffer, bytesPerRow);
         byteBuffer.reset();
     }
 
