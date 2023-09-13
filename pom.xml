@@ -1,15 +1,42 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <groupId>com.github.eduramiba</groupId>
+    <groupId>io.github.eduramiba</groupId>
     <artifactId>webcam-capture-driver-native</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
 
     <name>Webcam Capture Driver Native</name>
     <description>Native driver for Webcam-capture project</description>
     <inceptionYear>2021</inceptionYear>
+    <url>https://github.com/eduramiba/webcam-capture-driver-native</url>
+
+     <!-- Licenses -->
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.opensource.org/licenses/Apache-2.0</url>
+            <comments>Apache License, Version 2.0</comments>
+        </license>
+    </licenses>
+    
+    <!-- SCM -->
+    <scm>
+        <connection>scm:git:git://github.com/eduramiba/webcam-capture-driver-native.git</connection>
+        <developerConnection>scm:git:git@github.com:eduramiba/webcam-capture-driver-native.git</developerConnection>
+        <url>https://github.com/eduramiba/webcam-capture-driver-native</url>
+    </scm>
+    
+    <!-- Developers -->
+    <developers>
+        <developer>
+            <id>eduramiba</id>
+            <name>Eduardo Ramos</name>
+            <email>eduramiba@gmail.com</email>
+        </developer>
+    </developers>
+    
 
     <properties>
         <java.version>11</java.version>
@@ -17,34 +44,34 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Dependencies versions -->
-        <driver.slf4j.version>2.0.6</driver.slf4j.version>
+        <driver.slf4j.version>2.0.9</driver.slf4j.version>
 
         <driver.webcam-capture.version>0.3.13-SNAPSHOT</driver.webcam-capture.version>
         <driver.aalto-xml.version>1.3.2</driver.aalto-xml.version>
-        <driver.jna.version>5.12.1</driver.jna.version>
+        <driver.jna.version>5.13.0</driver.jna.version>
 
         <driver.javafx.version>19</driver.javafx.version>
 
         <!-- Plugins versions -->
-        <driver.maven-compiler-plugin.version>3.10.1</driver.maven-compiler-plugin.version>
-        <driver.maven-assembly-plugin.version>3.4.2</driver.maven-assembly-plugin.version>
-        <driver.maven-clean-plugin.version>3.2.0</driver.maven-clean-plugin.version>
-        <driver.maven-deploy-plugin.version>3.0.0</driver.maven-deploy-plugin.version>
-        <driver.maven-install-plugin.version>3.1.0</driver.maven-install-plugin.version>
+        <driver.maven-compiler-plugin.version>3.11.0</driver.maven-compiler-plugin.version>
+        <driver.maven-assembly-plugin.version>3.6.0</driver.maven-assembly-plugin.version>
+        <driver.maven-clean-plugin.version>3.3.1</driver.maven-clean-plugin.version>
+        <driver.maven-deploy-plugin.version>3.1.1</driver.maven-deploy-plugin.version>
+        <driver.maven-install-plugin.version>3.1.1</driver.maven-install-plugin.version>
         <driver.maven-jar-plugin.version>3.3.0</driver.maven-jar-plugin.version>
-        <driver.maven-dependency-plugin.version>3.4.0</driver.maven-dependency-plugin.version>
-        <driver.maven-resources-plugin.version>3.3.0</driver.maven-resources-plugin.version>
+        <driver.maven-dependency-plugin.version>3.6.0</driver.maven-dependency-plugin.version>
+        <driver.maven-resources-plugin.version>3.3.1</driver.maven-resources-plugin.version>
         <driver.copy-rename-maven-plugin.version>1.0.1</driver.copy-rename-maven-plugin.version>
         <driver.maven-site-plugin.version>3.12.1</driver.maven-site-plugin.version>
-        <driver.build-helper-maven-plugin.version>3.3.0</driver.build-helper-maven-plugin.version>
-        <driver.maven-surefire-plugin.version>2.22.2</driver.maven-surefire-plugin.version>
-        <driver.maven-failsafe-plugin.version>2.22.2</driver.maven-failsafe-plugin.version>
+        <driver.build-helper-maven-plugin.version>3.4.0</driver.build-helper-maven-plugin.version>
+        <driver.maven-surefire-plugin.version>3.1.2</driver.maven-surefire-plugin.version>
+        <driver.maven-failsafe-plugin.version>3.1.2</driver.maven-failsafe-plugin.version>
         <driver.maven-exec-plugin.version>3.1.0</driver.maven-exec-plugin.version>
-        <driver.modernizer-plugin.version>2.5.0</driver.modernizer-plugin.version>
-        <driver.versions-maven-plugin.version>2.14.1</driver.versions-maven-plugin.version>
-        <driver.help-maven-plugin.version>3.3.0</driver.help-maven-plugin.version>
-        <driver.maven-enforcer-plugin.version>3.1.0</driver.maven-enforcer-plugin.version>
-        <driver.maven-enforcer-plugin.extra-rules.version>1.6.1</driver.maven-enforcer-plugin.extra-rules.version>
+        <driver.modernizer-plugin.version>2.6.0</driver.modernizer-plugin.version>
+        <driver.versions-maven-plugin.version>2.16.0</driver.versions-maven-plugin.version>
+        <driver.help-maven-plugin.version>3.4.0</driver.help-maven-plugin.version>
+        <driver.maven-enforcer-plugin.version>3.4.1</driver.maven-enforcer-plugin.version>
+        <driver.maven-enforcer-plugin.extra-rules.version>1.7.0</driver.maven-enforcer-plugin.extra-rules.version>
         <driver.errorprone-plugin.version>2.16</driver.errorprone-plugin.version>
     </properties>
 
@@ -162,7 +189,7 @@
                     <configuration>
                         <archive>
                             <manifestEntries>
-                                <Automatic-Module-Name>com.github.eduramiba.webcamcapture</Automatic-Module-Name>
+                                <Automatic-Module-Name>io.github.eduramiba.webcamcapture</Automatic-Module-Name>
                             </manifestEntries>
                         </archive>
                     </configuration>
@@ -276,6 +303,9 @@
                                 <requireReleaseDeps>
                                     <message>No Snapshots Allowed For Release Versions</message>
                                     <onlyWhenRelease>true</onlyWhenRelease>
+                                    <excludes>
+                                        <exclude>com.github.sarxos:*</exclude>
+                                    </excludes>
                                 </requireReleaseDeps>
                                 <dependencyConvergence/>
                                 <reactorModuleConvergence>
@@ -385,13 +415,41 @@
             <build>
                 <plugins>
                     <plugin>
-                        <!-- Attach sources when deploying -->
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
                                 <goals>
                                     <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <doclint>all,-missing</doclint>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -407,4 +465,15 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 </project>

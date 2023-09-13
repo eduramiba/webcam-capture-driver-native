@@ -9,10 +9,9 @@ For Mac, it uses `AVFDriver`, based on a [custom library](https://github.com/edu
 
 # How to use
 
-1. Download this repository and run `mvn install`
-2. Add `com.github.eduramiba:webcam-capture-driver-native:1.0.0-SNAPSHOT` dependency to your application.
-3. Use the driver with `Webcam.setDriver(new NativeDriver())`
-4. List the devices with `Webcam.getWebcams()` as normal and use the library in your preferred way. In JavaFX it's recommended to do it as in the example below.
+1. Add `io.github.eduramiba:webcam-capture-driver-native:1.0.0` dependency to your application.
+2. Use the driver with `Webcam.setDriver(new NativeDriver())`
+3. List the devices with `Webcam.getWebcams()` as normal and use the library in your preferred way. In JavaFX it's recommended to do it as in the example below.
 
 # Simple example with JavaFX
 
