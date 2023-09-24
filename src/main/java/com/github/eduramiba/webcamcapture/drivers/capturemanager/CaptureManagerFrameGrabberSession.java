@@ -12,6 +12,8 @@ import java.awt.image.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -39,6 +41,8 @@ public class CaptureManagerFrameGrabberSession {
     private int bytesPerRow = -1;
     private int bufferSizeBytes = -1;
     private long lastFrameTimestamp = -1;
+
+    private Consumer<String> customEventListener = (eventType) -> {};
 
     public boolean init(
             final CaptureManagerSource source,
@@ -190,13 +194,34 @@ public class CaptureManagerFrameGrabberSession {
         session.addUpdateStateListener(new IUpdateStateListener() {
             @Override
             public void invoke(int aCallEventCode, int aSessionDescriptor) {
-                LOG.info("invoke with (aCallEventCode, aSessionDescriptor) = ({}, {})", aCallEventCode, aSessionDescriptor);
+                final String eventType = eventCodeToEventName(aCallEventCode);
+
+                LOG.info("IUpdateStateListener invoked with (eventType, aSessionDescriptor) = ({}, {})", eventType, aSessionDescriptor);
+
+                customEventListener.accept("CaptureManagerSDK::" + eventType);
             }
         });
 
         LOG.info("Successfully created CallSessionControl");
 
         return true;
+    }
+
+    private String eventCodeToEventName(int code) {
+        switch(code) {
+            case 1: return "Error";
+            case 2: return "Status_Error";
+            case 3: return "Execution_Error";
+            case 4: return "ItIsReadyToStart";
+            case 5: return "ItIsStarted";
+            case 6: return "ItIsPaused";
+            case 7: return "ItIsStopped";
+            case 8: return "ItIsEnded";
+            case 9: return "ItIsClosed";
+            case 10: return "VideoCaptureDeviceRemoved";
+            case 11: return "SnapTrigger";
+            default: return "UnknownEvent(" + code + ")";
+        }
     }
 
     private SinkValuePart findSinkValuePart(final CaptureManagerSinkFactory sinkFactory, final String name) {
@@ -319,6 +344,10 @@ public class CaptureManagerFrameGrabberSession {
 
         updateDirectBuffer();
         copyBuffer(target, directBuffer);
+    }
+
+    public void setCustomEventListener(final Consumer<String> customEventListener) {
+        this.customEventListener = customEventListener != null ? customEventListener : (eventType -> {});
     }
 
     private static int copyBuffer(ByteBuffer dest, ByteBuffer src) {

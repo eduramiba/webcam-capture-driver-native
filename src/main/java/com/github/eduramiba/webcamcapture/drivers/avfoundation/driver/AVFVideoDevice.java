@@ -296,4 +296,15 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
         final Raster raster = Raster.createRaster(sampleModel, dataBuffer, null);
         bufferedImage.setData(raster);
     }
+
+    @Override
+    public void addCustomEventsListener(Listener listener) {
+        // NOOP. To be improved with custom events from AVFoundation
+    }
+
+    @Override
+    public boolean removeCustomEventsListener(Listener listener) {
+        // NOOP
+        return true;
+    }
 }

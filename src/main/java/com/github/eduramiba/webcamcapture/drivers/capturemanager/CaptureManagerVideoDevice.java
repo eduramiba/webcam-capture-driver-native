@@ -1,6 +1,7 @@
 package com.github.eduramiba.webcamcapture.drivers.capturemanager;
 
 import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceExtended;
+import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceWithCustomEvents;
 import com.github.eduramiba.webcamcapture.drivers.capturemanager.model.CaptureManagerMediaType;
 import com.github.eduramiba.webcamcapture.drivers.capturemanager.model.CaptureManagerSource;
 import com.github.eduramiba.webcamcapture.drivers.capturemanager.model.CaptureManagerStreamDescriptor;
@@ -25,6 +26,8 @@ public class CaptureManagerVideoDevice implements WebcamDeviceExtended {
     private final List<CaptureManagerSinkFactory> sinksFactories;
     private final Dimension[] resolutions;
     private Dimension resolution;
+
+    private final LinkedHashSet<WebcamDeviceWithCustomEvents.Listener> listeners = new LinkedHashSet<>();
 
     private CaptureManagerFrameGrabberSession session = null;
 
@@ -102,6 +105,8 @@ public class CaptureManagerVideoDevice implements WebcamDeviceExtended {
         }
 
         session = new CaptureManagerFrameGrabberSession();
+
+        session.setCustomEventListener(this::customEventReceived);
 
         final Pair<CaptureManagerStreamDescriptor, CaptureManagerMediaType> best = findBestMediaTypeInStreams(
                 source.getStreamDescriptors(),
@@ -280,5 +285,21 @@ public class CaptureManagerVideoDevice implements WebcamDeviceExtended {
         }
 
         return session.toBufferedImage(byteBuffer);
+    }
+
+    @Override
+    public void addCustomEventsListener(Listener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public boolean removeCustomEventsListener(Listener listener) {
+        return listeners.remove(listener);
+    }
+
+    public void customEventReceived(String eventType) {
+        for (Listener l: listeners) {
+            l.customEventReceived(eventType, eventType);
+        }
     }
 }
