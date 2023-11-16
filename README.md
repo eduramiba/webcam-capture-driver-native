@@ -101,7 +101,6 @@ public class TestDriver extends Application {
 
 # Future work
 
-* Publish this as a maven central artifact. At the moment you will need to build it yourself.
 * Implement Linux driver
 
 # Notes
