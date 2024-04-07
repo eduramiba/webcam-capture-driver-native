@@ -31,6 +31,11 @@ public class CaptureManagerVideoDevice implements WebcamDeviceExtended {
 
     private CaptureManagerFrameGrabberSession session = null;
 
+    private long t1 = -1;
+    private long t2 = -1;
+
+    private volatile long fps = 0;
+
     public CaptureManagerVideoDevice(CaptureManagerSource source, List<CaptureManagerSinkFactory> sinksFactories) {
         this.source = Objects.requireNonNull(source, "source");
         this.sinksFactories = Objects.requireNonNull(sinksFactories, "sinksFactories");
@@ -93,7 +98,18 @@ public class CaptureManagerVideoDevice implements WebcamDeviceExtended {
     @Override
     public BufferedImage getImage() {
         if (isOpen()) {
-            return session.toBufferedImage();
+            if (t1 == -1 || t2 == -1) {
+                t1 = System.currentTimeMillis();
+                t2 = System.currentTimeMillis();
+            }
+
+            BufferedImage image = session.toBufferedImage();
+
+            t1 = t2;
+            t2 = System.currentTimeMillis();
+            fps = (4 * fps + 1000 / (t2 - t1 + 1)) / 5;
+
+            return image;
         }
         return null;
     }
@@ -233,12 +249,9 @@ public class CaptureManagerVideoDevice implements WebcamDeviceExtended {
         return null;
     }
 
-    public static final int MAX_FPS = 30;
-
     @Override
     public double getFPS() {
-        //TODO: Use actual FPS declared by stream
-        return MAX_FPS;
+        return fps;
     }
 
     @Override

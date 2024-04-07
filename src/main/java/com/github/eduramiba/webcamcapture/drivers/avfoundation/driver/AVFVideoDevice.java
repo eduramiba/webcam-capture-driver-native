@@ -37,6 +37,11 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
     private BufferedImage bufferedImage = null;
     private long lastFrameTimestamp = -1;
 
+    private long t1 = -1;
+    private long t2 = -1;
+
+    private volatile long fps = 0;
+
     public AVFVideoDevice(final int deviceIndex, final String id, final String name, final Collection<Dimension> resolutions) {
         this.deviceIndex = deviceIndex;
         this.id = id;
@@ -100,7 +105,18 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
 
     @Override
     public BufferedImage getImage() {
-        return getImage(imgBuffer);
+        if (t1 == -1 || t2 == -1) {
+            t1 = System.currentTimeMillis();
+            t2 = System.currentTimeMillis();
+        }
+
+        BufferedImage image = getImage(imgBuffer);
+
+        t1 = t2;
+        t2 = System.currentTimeMillis();
+        fps = (4 * fps + 1000 / (t2 - t1 + 1)) / 5;
+
+        return image;
     }
 
     @Override
@@ -162,12 +178,9 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
         return lastFrameTimestamp;
     }
 
-    public static final int MAX_FPS = 30;
-
     @Override
     public double getFPS() {
-        //TODO: Use actual FPS declared by stream
-        return MAX_FPS;
+        return fps;
     }
 
     @Override
