@@ -3,6 +3,7 @@ package com.github.eduramiba.webcamcapture.drivers;
 import com.github.eduramiba.webcamcapture.drivers.avfoundation.driver.AVFDriver;
 import com.github.eduramiba.webcamcapture.drivers.capturemanager.CaptureManagerDriver;
 import com.github.sarxos.webcam.WebcamDevice;
+import com.github.sarxos.webcam.WebcamDiscoverySupport;
 import com.github.sarxos.webcam.WebcamDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class NativeDriver implements WebcamDriver {
+public class NativeDriver implements WebcamDriver, WebcamDiscoverySupport {
     private static final Logger LOG = LoggerFactory.getLogger(NativeDriver.class);
 
     private final WebcamDriver driver;
@@ -48,5 +49,15 @@ public class NativeDriver implements WebcamDriver {
     @Override
     public boolean isThreadSafe() {
         return driver.isThreadSafe();
+    }
+
+    @Override
+    public long getScanInterval() {
+        return DEFAULT_SCAN_INTERVAL;
+    }
+
+    @Override
+    public boolean isScanPossible() {
+        return true;
     }
 }
