@@ -166,7 +166,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
     }
 
     @Override
-    public synchronized ByteBuffer getImageBytes() {
+    public ByteBuffer getImageBytes() {
         if (!isOpen()) {
             return null;
         }
@@ -220,7 +220,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
     }
 
     @Override
-    public synchronized boolean updateFXIMage(final WritableImage writableImage, final long lastFrameTimestamp) {
+    public boolean updateFXIMage(final WritableImage writableImage, final long lastFrameTimestamp) {
         if (!isOpen()) {
             return false;
         }
@@ -239,14 +239,13 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
         final int videoHeight = resolution.height;
         
         final PixelWriter pw = writableImage.getPixelWriter();
-        
-        imgBuffer.mark();
-        imgBuffer.position(0);
+
+        final ByteBuffer readBuffer = imgBuffer.asReadOnlyBuffer().position(0);
         pw.setPixels(
             0, 0, videoWidth, videoHeight,
-            PixelFormat.getByteRgbInstance(), imgBuffer, bytesPerRow
+            PixelFormat.getByteRgbInstance(), readBuffer, bytesPerRow
         );
-            
+
         return true;
     }
 
@@ -272,7 +271,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
         }
     }
 
-    private void doGrab() {
+    private synchronized void doGrab() {
         final int grabResult = LibNokhwa.INSTANCE.cnokhwa_grab_frame(
                 deviceIndex,
                 Native.getDirectBufferPointer(imgBuffer), imgBuffer.capacity()
@@ -298,10 +297,8 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
             new int[]{0, 1, 2}
         );
 
-        imgBuffer.mark();
-        imgBuffer.position(0);
-        imgBuffer.get(arrayByteBuffer, 0, imgBuffer.capacity());
-        imgBuffer.reset();
+        final ByteBuffer readBuffer = imgBuffer.asReadOnlyBuffer().position(0);
+        readBuffer.get(arrayByteBuffer, 0, readBuffer.capacity());
 
         final DataBuffer dataBuffer = new DataBufferByte(arrayByteBuffer, arrayByteBuffer.length);
         final Raster raster = Raster.createRaster(sampleModel, dataBuffer, null);
