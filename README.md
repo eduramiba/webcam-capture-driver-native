@@ -2,10 +2,10 @@
 
 This is a native driver for [Webcam Capture](https://github.com/sarxos/webcam-capture) that is reliable, has very good performance, fast startup time and is able to correctly list the detailed capabilities of video devices such as resolutions and device IDs.
 
-Currently it works on Windows and Mac.
+Currently it works on Windows, Linux and MacOS.
 
-For Windows, it uses the `CaptureManagerDriver`, based on [CaptureManager-SDK](https://www.codeproject.com/Articles/1017223/CaptureManager-SDK-Capturing-Recording-and-Streami), which uses the MediaFoundation Windows API.
-For Mac, it uses `AVFDriver`, based on a [custom library](https://github.com/eduramiba/libvideocapture-avfoundation) that uses [AVFoundation](https://developer.apple.com/av-foundation/).
+For Windows and Linux, it uses the `NokhwaDriver`, based on [nokhwa](https://github.com/l1npengtul/nokhwa), which uses the MediaFoundation Windows API and V4L2 in Linux.
+For MacOS, it uses `AVFDriver`, based on a [custom library](https://github.com/eduramiba/libvideocapture-avfoundation) that uses [AVFoundation](https://developer.apple.com/av-foundation/). When Nokhwa is stable in MacOS, this library will be updated to use `NokhwaDriver` for every OS.
 
 # How to use
 
@@ -104,9 +104,6 @@ public class TestDriver extends Application {
 * Implement Linux driver
 
 # Notes
-
-The source code in `natives` folder and `capturemanager` java package has been copied from [CaptureManager-SDK](https://www.codeproject.com/Articles/1017223/CaptureManager-SDK-Capturing-Recording-and-Streami) and slightly improved for this driver. This code is not idiomatic java and needs improvement.
-The DLLs for Windows can just be copied along with your program.
 
 The native dynamic libraries for Mac are on `src/main/resources` and loaded by JNA from inside the JAR.
 Note that if you want to distribute a Mac app you will need to properly codesign the dylib files with entitlements, have an Info.plist, notarization...
