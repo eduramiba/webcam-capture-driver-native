@@ -44,34 +44,34 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Dependencies versions -->
-        <driver.slf4j.version>2.0.9</driver.slf4j.version>
+        <driver.slf4j.version>2.0.16</driver.slf4j.version>
 
         <driver.webcam-capture.version>0.3.13-SNAPSHOT</driver.webcam-capture.version>
-        <driver.aalto-xml.version>1.3.2</driver.aalto-xml.version>
-        <driver.jna.version>5.13.0</driver.jna.version>
+        <driver.aalto-xml.version>1.3.3</driver.aalto-xml.version>
+        <driver.jna.version>5.15.0</driver.jna.version>
 
         <driver.javafx.version>19</driver.javafx.version>
 
         <!-- Plugins versions -->
-        <driver.maven-compiler-plugin.version>3.11.0</driver.maven-compiler-plugin.version>
-        <driver.maven-assembly-plugin.version>3.6.0</driver.maven-assembly-plugin.version>
-        <driver.maven-clean-plugin.version>3.3.1</driver.maven-clean-plugin.version>
-        <driver.maven-deploy-plugin.version>3.1.1</driver.maven-deploy-plugin.version>
-        <driver.maven-install-plugin.version>3.1.1</driver.maven-install-plugin.version>
-        <driver.maven-jar-plugin.version>3.3.0</driver.maven-jar-plugin.version>
-        <driver.maven-dependency-plugin.version>3.6.0</driver.maven-dependency-plugin.version>
+        <driver.maven-compiler-plugin.version>3.13.0</driver.maven-compiler-plugin.version>
+        <driver.maven-assembly-plugin.version>3.7.1</driver.maven-assembly-plugin.version>
+        <driver.maven-clean-plugin.version>3.4.0</driver.maven-clean-plugin.version>
+        <driver.maven-deploy-plugin.version>3.1.3</driver.maven-deploy-plugin.version>
+        <driver.maven-install-plugin.version>3.1.3</driver.maven-install-plugin.version>
+        <driver.maven-jar-plugin.version>3.4.2</driver.maven-jar-plugin.version>
+        <driver.maven-dependency-plugin.version>3.8.1</driver.maven-dependency-plugin.version>
         <driver.maven-resources-plugin.version>3.3.1</driver.maven-resources-plugin.version>
         <driver.copy-rename-maven-plugin.version>1.0.1</driver.copy-rename-maven-plugin.version>
-        <driver.maven-site-plugin.version>3.12.1</driver.maven-site-plugin.version>
-        <driver.build-helper-maven-plugin.version>3.4.0</driver.build-helper-maven-plugin.version>
-        <driver.maven-surefire-plugin.version>3.1.2</driver.maven-surefire-plugin.version>
-        <driver.maven-failsafe-plugin.version>3.1.2</driver.maven-failsafe-plugin.version>
-        <driver.maven-exec-plugin.version>3.1.0</driver.maven-exec-plugin.version>
-        <driver.modernizer-plugin.version>2.7.0</driver.modernizer-plugin.version>
-        <driver.versions-maven-plugin.version>2.16.1</driver.versions-maven-plugin.version>
-        <driver.help-maven-plugin.version>3.4.0</driver.help-maven-plugin.version>
-        <driver.maven-enforcer-plugin.version>3.4.1</driver.maven-enforcer-plugin.version>
-        <driver.maven-enforcer-plugin.extra-rules.version>1.7.0</driver.maven-enforcer-plugin.extra-rules.version>
+        <driver.maven-site-plugin.version>3.21.0</driver.maven-site-plugin.version>
+        <driver.build-helper-maven-plugin.version>3.6.0</driver.build-helper-maven-plugin.version>
+        <driver.maven-surefire-plugin.version>3.5.2</driver.maven-surefire-plugin.version>
+        <driver.maven-failsafe-plugin.version>3.5.2</driver.maven-failsafe-plugin.version>
+        <driver.maven-exec-plugin.version>3.5.0</driver.maven-exec-plugin.version>
+        <driver.modernizer-plugin.version>2.9.0</driver.modernizer-plugin.version>
+        <driver.versions-maven-plugin.version>2.18.0</driver.versions-maven-plugin.version>
+        <driver.help-maven-plugin.version>3.5.1</driver.help-maven-plugin.version>
+        <driver.maven-enforcer-plugin.version>3.5.0</driver.maven-enforcer-plugin.version>
+        <driver.maven-enforcer-plugin.extra-rules.version>1.9.0</driver.maven-enforcer-plugin.extra-rules.version>
         <driver.errorprone-plugin.version>2.16</driver.errorprone-plugin.version>
     </properties>
 
