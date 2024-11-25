@@ -23,9 +23,8 @@ public interface LibNokhwa extends Library {
     public static final int ERROR_READING_CAMERA_SESSION = (-7);
     public static final int ERROR_READING_FRAME = (-8);
     public static final int ERROR_DECODING_FRAME = (-9);
-    public static final int ERROR_NO_FRAME_AVAILABLE = (-10);
-    public static final int ERROR_BUFFER_NULL = (-11);
-    public static final int ERROR_BUFFER_NOT_ENOUGH_CAPACITY = (-12);
+    public static final int ERROR_BUFFER_NULL = (-10);
+    public static final int ERROR_BUFFER_NOT_ENOUGH_CAPACITY = (-11);
 
     // Auth status:
     public static final int STATUS_AUTHORIZED = (0);

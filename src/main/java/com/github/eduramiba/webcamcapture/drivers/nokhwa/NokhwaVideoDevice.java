@@ -279,7 +279,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
 
         if (grabResult == RESULT_OK) {
             lastFrameTimestamp = System.currentTimeMillis();
-        } else if (grabResult != ERROR_NO_FRAME_AVAILABLE){
+        } else {
             LOG.error("Error grabbing frame = {}", grabResult);
         }
     }
