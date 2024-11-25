@@ -3,7 +3,7 @@
 
     <groupId>io.github.eduramiba</groupId>
     <artifactId>webcam-capture-driver-native</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
 
@@ -369,7 +369,11 @@
                             <classifier>without-natives</classifier>
                             <excludes>
                                 <exclude>darwin-*</exclude>
+                                <exclude>linux-*</exclude>
+                                <exclude>win32-*</exclude>
                                 <exclude>**/*.dylib</exclude>
+                                <exclude>**/*.so</exclude>
+                                <exclude>**/*.dll</exclude>
                             </excludes>
                         </configuration>
                     </execution>
