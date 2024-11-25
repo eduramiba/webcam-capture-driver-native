@@ -251,32 +251,37 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
     }
 
     private void updateBuffer() {
-        final int hasFrameResult = LibNokhwa.INSTANCE.cnokhwa_has_new_frame(deviceIndex);
-
-        if (hasFrameResult == RESULT_YES) {
-            if (imgBuffer == null) {
+        if (imgBuffer == null) {
+            final int hasFrameResult = LibNokhwa.INSTANCE.cnokhwa_has_new_frame(deviceIndex);
+            if (hasFrameResult == RESULT_YES) {
                 // Init buffer if still not initialized:
                 this.bytesPerRow = LibNokhwa.INSTANCE.cnokhwa_frame_bytes_per_row(deviceIndex);
 
                 final var bufferSizeBytes = bytesPerRow * resolution.height;
                 this.imgBuffer = ByteBuffer.allocateDirect(bufferSizeBytes);
                 this.arrayByteBuffer = new byte[imgBuffer.capacity()];
-            }
 
-            final int grabResult = LibNokhwa.INSTANCE.cnokhwa_grab_frame(
-                    deviceIndex,
-                    Native.getDirectBufferPointer(imgBuffer), imgBuffer.capacity()
-            );
-
-            if (grabResult == RESULT_OK) {
-                lastFrameTimestamp = System.currentTimeMillis();
+                doGrab();
             } else {
-                LOG.error("Error grabbing frame = {}", grabResult);
+                if (hasFrameResult != RESULT_NO) {
+                    LOG.error("Error checking for new frame = {}", hasFrameResult);
+                }
             }
         } else {
-            if (hasFrameResult != RESULT_NO) {
-                LOG.error("Error checking for new frame = {}", hasFrameResult);
-            }
+            doGrab();
+        }
+    }
+
+    private void doGrab() {
+        final int grabResult = LibNokhwa.INSTANCE.cnokhwa_grab_frame(
+                deviceIndex,
+                Native.getDirectBufferPointer(imgBuffer), imgBuffer.capacity()
+        );
+
+        if (grabResult == RESULT_OK) {
+            lastFrameTimestamp = System.currentTimeMillis();
+        } else if (grabResult != ERROR_NO_FRAME_AVAILABLE){
+            LOG.error("Error grabbing frame = {}", grabResult);
         }
     }
 
