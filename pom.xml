@@ -47,7 +47,6 @@
         <driver.slf4j.version>2.0.16</driver.slf4j.version>
 
         <driver.webcam-capture.version>0.3.13-SNAPSHOT</driver.webcam-capture.version>
-        <driver.aalto-xml.version>1.3.3</driver.aalto-xml.version>
         <driver.jna.version>5.15.0</driver.jna.version>
 
         <driver.javafx.version>19</driver.javafx.version>
@@ -96,12 +95,6 @@
             </dependency>
 
             <dependency>
-                <groupId>com.fasterxml</groupId>
-                <artifactId>aalto-xml</artifactId>
-                <version>${driver.aalto-xml.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-graphics</artifactId>
                 <version>${driver.javafx.version}</version>
@@ -129,11 +122,6 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml</groupId>
-            <artifactId>aalto-xml</artifactId>
         </dependency>
 
         <dependency>
