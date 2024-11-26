@@ -4,7 +4,7 @@ This is a native driver for [Webcam Capture](https://github.com/sarxos/webcam-ca
 
 Currently it works on Windows, Linux and MacOS.
 
-For Windows and Linux, it uses the `NokhwaDriver`, based on [nokhwa](https://github.com/l1npengtul/nokhwa), which uses the MediaFoundation Windows API and V4L2 in Linux.
+For Windows and Linux, it uses the `NokhwaDriver`, based on [nokhwa](https://github.com/l1npengtul/nokhwa) through a [simple and small C binding](https://github.com/eduramiba/lib-cnokhwa), which uses the MediaFoundation Windows API and V4L2 in Linux.
 For MacOS, it uses `AVFDriver`, based on a [custom library](https://github.com/eduramiba/libvideocapture-avfoundation) that uses [AVFoundation](https://developer.apple.com/av-foundation/). When Nokhwa is stable in MacOS, this library will be updated to use `NokhwaDriver` for every OS.
 
 # How to use
@@ -98,10 +98,6 @@ public class TestDriver extends Application {
     }
 }
 ```
-
-# Future work
-
-* Implement Linux driver
 
 # Notes
 
