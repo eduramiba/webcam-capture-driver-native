@@ -251,8 +251,8 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
 
     private void updateBuffer() {
         if (imgBuffer == null) {
-            final int hasFrameResult = LibNokhwa.INSTANCE.cnokhwa_has_new_frame(deviceIndex);
-            if (hasFrameResult == RESULT_YES) {
+            final int hasFirstFrameResult = LibNokhwa.INSTANCE.cnokhwa_has_first_frame(deviceIndex);
+            if (hasFirstFrameResult == RESULT_YES) {
                 // Init buffer if still not initialized:
                 this.bytesPerRow = LibNokhwa.INSTANCE.cnokhwa_frame_bytes_per_row(deviceIndex);
 
@@ -262,8 +262,8 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
 
                 doGrab();
             } else {
-                if (hasFrameResult != RESULT_NO) {
-                    LOG.error("Error checking for new frame = {}", hasFrameResult);
+                if (hasFirstFrameResult != RESULT_NO) {
+                    LOG.error("Error checking for new frame = {}", hasFirstFrameResult);
                 }
             }
         } else {

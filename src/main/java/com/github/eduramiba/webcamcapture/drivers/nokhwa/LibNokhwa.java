@@ -59,7 +59,7 @@ public interface LibNokhwa extends Library {
 
     int cnokhwa_stop_capture(int deviceIndex);
 
-    int cnokhwa_has_new_frame(int deviceIndex);
+    int cnokhwa_has_first_frame(int deviceIndex);
 
     int cnokhwa_frame_width(int deviceIndex);
 
