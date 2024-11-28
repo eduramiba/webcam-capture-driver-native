@@ -36,7 +36,7 @@ public class NokhwaDriver implements WebcamDriver {
 
         final int devicesCount = lib.cnokhwa_devices_count();
 
-        LOG.info("Available devices: {}", devicesCount);
+        LOG.debug("Available devices: {}", devicesCount);
 
         if (devicesCount < 1) {
             return list;
@@ -69,7 +69,7 @@ public class NokhwaDriver implements WebcamDriver {
                 }
             }
 
-            LOG.info("Found camera {} (id {}) with available formats: {}", name, uniqueId, availableFormats);
+            LOG.debug("Found camera {} (id {}) with available formats: {}", name, uniqueId, availableFormats);
 
             final NokhwaVideoDevice device = new NokhwaVideoDevice(devIndex, uniqueId, name, resolutions, maxFps);
             if (device.isValid()) {
