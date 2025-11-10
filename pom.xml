@@ -46,7 +46,7 @@
         <!-- Dependencies versions -->
         <driver.slf4j.version>2.0.17</driver.slf4j.version>
 
-        <driver.webcam-capture.version>0.3.13-SNAPSHOT</driver.webcam-capture.version>
+        <driver.webcam-capture.version>0.3.12</driver.webcam-capture.version>
         <driver.jna.version>5.18.1</driver.jna.version>
 
         <driver.javafx.version>19</driver.javafx.version>
