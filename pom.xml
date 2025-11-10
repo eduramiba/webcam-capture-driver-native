@@ -72,6 +72,7 @@
         <driver.maven-enforcer-plugin.version>3.6.2</driver.maven-enforcer-plugin.version>
         <driver.maven-enforcer-plugin.extra-rules.version>1.11.0</driver.maven-enforcer-plugin.extra-rules.version>
         <driver.errorprone-plugin.version>2.16</driver.errorprone-plugin.version>
+        <driver.central-publishing-maven-plugin.version>0.9.0</driver.central-publishing-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -255,6 +256,12 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-help-plugin</artifactId>
                     <version>${driver.help-maven-plugin.version}</version>
+                </plugin>
+                <!-- Maven central -->
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>${driver.central-publishing-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -446,6 +453,17 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>false</autoPublish>
+                            <deploymentName>${project.version}</deploymentName>
+                            <ignorePublishedComponents>true</ignorePublishedComponents>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -464,15 +482,4 @@
             </snapshots>
         </repository>
     </repositories>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 </project>
