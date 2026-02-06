@@ -1,6 +1,7 @@
 package com.github.eduramiba.webcamcapture.drivers.nokhwa;
 
 import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceExtended;
+import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceWithBufferOperations.RawFramePixelFormat;
 import com.sun.jna.Native;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.PixelWriter;
@@ -182,12 +183,16 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
             return;
         }
 
+        updateBuffer();
+        if (imgBuffer == null) {
+            return;
+        }
+
         if (target.remaining() < imgBuffer.capacity()) {
             LOG.error("At least {} bytes needed but passed buffer has only {} remaining size", imgBuffer.capacity(), target.capacity());
             return;
         }
 
-        updateBuffer();
         imgBuffer.rewind();
         target.put(imgBuffer);
     }
@@ -247,6 +252,25 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
         );
 
         return true;
+    }
+
+    @Override
+    public synchronized RawFramePixelFormat getRawFramePixelFormat() {
+        return RawFramePixelFormat.BYTE_RGB;
+    }
+
+    @Override
+    public synchronized int getRawFrameBytesPerRow() {
+        if (!isOpen()) {
+            return -1;
+        }
+        if (bytesPerRow <= 0) {
+            updateBuffer();
+        }
+        if (bytesPerRow > 0) {
+            return bytesPerRow;
+        }
+        return resolution != null ? resolution.width * getRawFrameBytesPerPixel() : -1;
     }
 
     private void updateBuffer() {
