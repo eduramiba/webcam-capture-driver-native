@@ -1,16 +1,25 @@
 package com.github.eduramiba.webcamcapture.drivers.directshow;
 
-import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
-import com.sun.jna.NativeLong;
-import com.sun.jna.Pointer;
+import com.sun.jna.*;
+import com.sun.jna.win32.StdCallFunctionMapper;
 import com.sun.jna.win32.StdCallLibrary;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public interface LibCdshow extends StdCallLibrary {
 
+    private static Map<String, Object> getCallOptions() {
+        final Map<String, Object> options = new HashMap<>();
+
+        options.put(Library.OPTION_CALLING_CONVENTION, Function.ALT_CONVENTION);
+        options.put(Library.OPTION_FUNCTION_MAPPER, new StdCallFunctionMapper());
+
+        return options;
+    }
+
     String JNA_LIBRARY_NAME = "cdshow";
-    NativeLibrary JNA_NATIVE_LIB = NativeLibrary.getInstance(LibCdshow.JNA_LIBRARY_NAME);
-    LibCdshow INSTANCE = Native.load(LibCdshow.JNA_LIBRARY_NAME, LibCdshow.class);
+    LibCdshow INSTANCE = Native.load(LibCdshow.JNA_LIBRARY_NAME, LibCdshow.class, getCallOptions());
 
     int CDS_OK = 0;
     int CDS_ERR_DEVICE_NOT_FOUND = -1;
