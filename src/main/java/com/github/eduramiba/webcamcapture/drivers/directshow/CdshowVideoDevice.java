@@ -27,7 +27,8 @@ import static com.github.eduramiba.webcamcapture.drivers.directshow.LibCdshow.CD
 public class CdshowVideoDevice implements WebcamDeviceExtended {
     private static final Logger LOG = LoggerFactory.getLogger(CdshowVideoDevice.class);
 
-    private static final String BUTTON_PRESSED_EVENT_TYPE = "button_pressed";
+    private static final String BUTTON_PRESSED_EVENT_TYPE = "SnapTrigger";
+    private static final int RGB32_BYTES_PER_PIXEL = RawFramePixelFormat.BYTE_RGB32.getBytesPerPixel();
 
     private final int deviceIndex;
     private final String id;
@@ -41,7 +42,7 @@ public class CdshowVideoDevice implements WebcamDeviceExtended {
     private boolean open = false;
     private int bytesPerRow = -1;
     private ByteBuffer imgBuffer = null;
-    private byte[] arrayByteBuffer = null;
+    private byte[] frameByteBuffer = null;
     private BufferedImage bufferedImage = null;
     private long lastFrameTimestamp = -1;
 
@@ -139,7 +140,7 @@ public class CdshowVideoDevice implements WebcamDeviceExtended {
             open = false;
             bytesPerRow = -1;
             imgBuffer = null;
-            arrayByteBuffer = null;
+            frameByteBuffer = null;
             bufferedImage = null;
         }
     }
@@ -236,14 +237,19 @@ public class CdshowVideoDevice implements WebcamDeviceExtended {
             return false;
         }
 
-        final int videoWidth = resolution.width;
-        final int videoHeight = resolution.height;
+        final int videoWidth = bufferedImage != null ? bufferedImage.getWidth() : resolution.width;
+        final int videoHeight = bufferedImage != null ? bufferedImage.getHeight() : resolution.height;
         final PixelWriter pixelWriter = writableImage.getPixelWriter();
-
+        final int effectiveBytesPerRow = bytesPerRow > 0 ? bytesPerRow : videoWidth * RGB32_BYTES_PER_PIXEL;
+        if (effectiveBytesPerRow < videoWidth * RGB32_BYTES_PER_PIXEL) {
+            LOG.error("Invalid RGB32 stride for device {}. bytesPerRow={}, width={}", id, effectiveBytesPerRow, videoWidth);
+            return false;
+        }
         final ByteBuffer readBuffer = imgBuffer.asReadOnlyBuffer().position(0);
+
         pixelWriter.setPixels(
             0, 0, videoWidth, videoHeight,
-            PixelFormat.getByteRgbInstance(), readBuffer, bytesPerRow
+            PixelFormat.getByteBgraPreInstance(), readBuffer, effectiveBytesPerRow
         );
 
         return true;
@@ -251,7 +257,7 @@ public class CdshowVideoDevice implements WebcamDeviceExtended {
 
     @Override
     public synchronized RawFramePixelFormat getRawFramePixelFormat() {
-        return RawFramePixelFormat.BYTE_RGB;
+        return RawFramePixelFormat.BYTE_RGB32;
     }
 
     @Override
@@ -284,7 +290,7 @@ public class CdshowVideoDevice implements WebcamDeviceExtended {
 
                 final int bufferSizeBytes = bytesPerRow * frameHeight;
                 this.imgBuffer = ByteBuffer.allocateDirect(bufferSizeBytes);
-                this.arrayByteBuffer = new byte[imgBuffer.capacity()];
+                this.frameByteBuffer = new byte[imgBuffer.capacity()];
                 this.bufferedImage = new BufferedImage(frameWidth, frameHeight, BufferedImage.TYPE_INT_BGR);
 
                 doGrab();
@@ -328,16 +334,30 @@ public class CdshowVideoDevice implements WebcamDeviceExtended {
 
         final int videoWidth = bufferedImage.getWidth();
         final int videoHeight = bufferedImage.getHeight();
+        final int effectiveBytesPerRow = bytesPerRow > 0 ? bytesPerRow : videoWidth * RGB32_BYTES_PER_PIXEL;
+        if (effectiveBytesPerRow < videoWidth * RGB32_BYTES_PER_PIXEL) {
+            LOG.error("Invalid RGB32 stride for device {}. bytesPerRow={}, width={}", id, effectiveBytesPerRow, videoWidth);
+            return;
+        }
 
-        final ComponentSampleModel sampleModel = new ComponentSampleModel(
-            DataBuffer.TYPE_BYTE, videoWidth, videoHeight, 3, bytesPerRow,
-            new int[]{0, 1, 2}
-        );
+        final int expectedSize = effectiveBytesPerRow * videoHeight;
+        if (imgBuffer.capacity() < expectedSize) {
+            LOG.error("Invalid RGB32 buffer size for device {}. capacity={}, expected={}", id, imgBuffer.capacity(), expectedSize);
+            return;
+        }
+        if (frameByteBuffer == null || frameByteBuffer.length != imgBuffer.capacity()) {
+            frameByteBuffer = new byte[imgBuffer.capacity()];
+        }
 
         final ByteBuffer readBuffer = imgBuffer.asReadOnlyBuffer().position(0);
-        readBuffer.get(arrayByteBuffer, 0, readBuffer.capacity());
+        readBuffer.get(frameByteBuffer, 0, frameByteBuffer.length);
 
-        final DataBuffer dataBuffer = new DataBufferByte(arrayByteBuffer, arrayByteBuffer.length);
+        final ComponentSampleModel sampleModel = new ComponentSampleModel(
+            DataBuffer.TYPE_BYTE, videoWidth, videoHeight, RGB32_BYTES_PER_PIXEL, effectiveBytesPerRow,
+            new int[]{2, 1, 0}
+        );
+
+        final DataBuffer dataBuffer = new DataBufferByte(frameByteBuffer, frameByteBuffer.length);
         final Raster raster = Raster.createRaster(sampleModel, dataBuffer, null);
         bufferedImage.setData(raster);
     }

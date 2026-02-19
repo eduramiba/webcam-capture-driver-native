@@ -9,7 +9,8 @@ import javafx.scene.image.WritableImage;
 public interface WebcamDeviceWithBufferOperations extends WebcamDevice {
 
     enum RawFramePixelFormat {
-        BYTE_RGB(3);
+        BYTE_RGB(3),
+        BYTE_RGB32(4);
 
         private final int bytesPerPixel;
 
