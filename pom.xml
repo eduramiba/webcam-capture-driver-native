@@ -58,7 +58,7 @@
         <driver.maven-deploy-plugin.version>3.1.4</driver.maven-deploy-plugin.version>
         <driver.maven-install-plugin.version>3.1.4</driver.maven-install-plugin.version>
 	<driver.maven-jar-plugin.version>3.5.0</driver.maven-jar-plugin.version>
-        <driver.maven-dependency-plugin.version>3.9.0</driver.maven-dependency-plugin.version>
+        <driver.maven-dependency-plugin.version>3.10.0</driver.maven-dependency-plugin.version>
         <driver.maven-resources-plugin.version>3.4.0</driver.maven-resources-plugin.version>
         <driver.copy-rename-maven-plugin.version>1.0.1</driver.copy-rename-maven-plugin.version>
         <driver.maven-site-plugin.version>3.21.0</driver.maven-site-plugin.version>

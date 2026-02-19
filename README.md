@@ -4,7 +4,8 @@ This is a native driver for [Webcam Capture](https://github.com/sarxos/webcam-ca
 
 Currently it works on Windows, Linux and MacOS.
 
-For Windows and Linux, it uses the `NokhwaDriver`, based on [nokhwa](https://github.com/l1npengtul/nokhwa) through a [simple and small C binding](https://github.com/eduramiba/lib-cnokhwa), which uses the MediaFoundation Windows API and V4L2 in Linux.
+For Linux, it uses the `NokhwaDriver`, based on [nokhwa](https://github.com/l1npengtul/nokhwa) through a [simple and small C binding](https://github.com/eduramiba/lib-cnokhwa), which uses V4L2 in Linux.
+For Windows, `NativeDriver` uses `NokhwaDriver` by default, and Nokhwa uses Microsoft Media Foundation on Windows. You can optionally use a DirectShow backend (`CdshowDriver`) through `cdshow.dll` for retro compatibility.
 For MacOS, it uses `AVFDriver`, based on a [custom library](https://github.com/eduramiba/libvideocapture-avfoundation) that uses [AVFoundation](https://developer.apple.com/av-foundation/). When Nokhwa is stable in MacOS, this library will be updated to use `NokhwaDriver` for every OS.
 
 # How to use
@@ -12,6 +13,26 @@ For MacOS, it uses `AVFDriver`, based on a [custom library](https://github.com/e
 1. Add `io.github.eduramiba:webcam-capture-driver-native:1.2.3` dependency to your application.
 2. Use the driver with `Webcam.setDriver(new NativeDriver())`
 3. List the devices with `Webcam.getWebcams()` as normal and use the library in your preferred way. In JavaFX it's recommended to do it as in the example below.
+
+## Windows backend selection
+
+By default, Windows uses `NokhwaDriver`.
+
+To use DirectShow (`cdshow.dll`), use one of these options:
+
+1. Java code:
+
+```java
+Webcam.setDriver(new NativeDriver(NativeDriver.WindowsBackend.DIRECTSHOW));
+```
+
+2. System property:
+
+```bash
+-Dwebcamcapture.windows.backend=directshow
+```
+
+Accepted property values are `nokhwa`, `directshow`, and `cdshow`.
 
 # Simple example with JavaFX
 
