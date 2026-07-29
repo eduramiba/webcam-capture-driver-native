@@ -225,12 +225,7 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
     }
 
     @Override
-    public boolean updateFXIMage(WritableImage writableImage) {
-        return updateFXIMage(writableImage, -1);
-    }
-
-    @Override
-    public synchronized boolean updateFXIMage(final WritableImage writableImage, final long lastFrameTimestamp) {
+    public synchronized boolean updateFXIMage(final WritableImage writableImage, float zoomFactor, final long lastFrameTimestamp) {
         if (!isOpen()) {
             return false;
         }
@@ -244,16 +239,18 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
         if (this.lastFrameTimestamp <= lastFrameTimestamp) {
             return false;
         }
-        
-        final int videoWidth = resolution.width;
-        final int videoHeight = resolution.height;
+
+        final int videoWidth = Math.round(resolution.width/zoomFactor);
+        final int videoHeight = Math.round(resolution.height/zoomFactor);
+
+        int offsetX = (resolution.width - videoWidth)/2;
+        int offsetY = (resolution.height - videoHeight)/2;
         
         final PixelWriter pw = writableImage.getPixelWriter();
         
         imgBuffer.mark();
         imgBuffer.position(0);
-        pw.setPixels(
-            0, 0, videoWidth, videoHeight,
+        pw.setPixels(offsetX, offsetY, videoWidth, videoHeight,
             PixelFormat.getByteRgbInstance(), imgBuffer, bytesPerRow
         );
             

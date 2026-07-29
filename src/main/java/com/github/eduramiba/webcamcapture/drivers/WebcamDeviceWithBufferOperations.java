@@ -25,9 +25,15 @@ public interface WebcamDeviceWithBufferOperations extends WebcamDevice {
 
     BufferedImage getImage(ByteBuffer byteBuffer);
 
-    boolean updateFXIMage(WritableImage writableImage);
+    default boolean updateFXIMage(WritableImage writableImage) {
+        return updateFXIMage(writableImage, 1f, -1);
+    }
 
-    boolean updateFXIMage(WritableImage writableImage, long lastFrameTimestamp);
+    default boolean updateFXIMage(WritableImage writableImage, float zoomFactor) {
+        return updateFXIMage(writableImage, zoomFactor, -1);
+    }
+
+    boolean updateFXIMage(WritableImage writableImage, float zoomFactor, long lastFrameTimestamp);
 
     long getLastFrameTimestamp();
 
