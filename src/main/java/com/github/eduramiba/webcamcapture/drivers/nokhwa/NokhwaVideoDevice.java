@@ -1,7 +1,6 @@
 package com.github.eduramiba.webcamcapture.drivers.nokhwa;
 
 import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceExtended;
-import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceWithBufferOperations.RawFramePixelFormat;
 import com.sun.jna.Native;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.PixelWriter;
@@ -220,12 +219,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
     }
 
     @Override
-    public boolean updateFXIMage(WritableImage writableImage) {
-        return updateFXIMage(writableImage, -1);
-    }
-
-    @Override
-    public boolean updateFXIMage(final WritableImage writableImage, final long lastFrameTimestamp) {
+    public boolean updateFXIMage(final WritableImage writableImage, float zoomFactor, final long lastFrameTimestamp) {
         if (!isOpen()) {
             return false;
         }
@@ -240,12 +234,15 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
             return false;
         }
         
-        final int videoWidth = resolution.width;
-        final int videoHeight = resolution.height;
+        final int videoWidth = Math.round(resolution.width/zoomFactor);
+        final int videoHeight = Math.round(resolution.height/zoomFactor);
+
+        int offsetX = (resolution.width - videoWidth)/2;
+        int offsetY = (resolution.height - videoHeight)/2;
         
         final PixelWriter pw = writableImage.getPixelWriter();
 
-        final ByteBuffer readBuffer = imgBuffer.asReadOnlyBuffer().position(0);
+        final ByteBuffer readBuffer = imgBuffer.asReadOnlyBuffer().position((bytesPerRow * offsetY) + (getRawFrameBytesPerPixel()*offsetX));
         pw.setPixels(
             0, 0, videoWidth, videoHeight,
             PixelFormat.getByteRgbInstance(), readBuffer, bytesPerRow

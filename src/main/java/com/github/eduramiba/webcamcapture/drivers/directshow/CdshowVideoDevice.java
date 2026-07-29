@@ -1,7 +1,6 @@
 package com.github.eduramiba.webcamcapture.drivers.directshow;
 
 import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceExtended;
-import com.github.eduramiba.webcamcapture.drivers.WebcamDeviceWithBufferOperations.RawFramePixelFormat;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import javafx.scene.image.PixelFormat;
@@ -217,12 +216,7 @@ public class CdshowVideoDevice implements WebcamDeviceExtended {
     }
 
     @Override
-    public synchronized boolean updateFXIMage(final WritableImage writableImage) {
-        return updateFXIMage(writableImage, -1);
-    }
-
-    @Override
-    public synchronized boolean updateFXIMage(final WritableImage writableImage, final long lastFrameTimestamp) {
+    public synchronized boolean updateFXIMage(final WritableImage writableImage, float zoomFactor, final long lastFrameTimestamp) {
         if (!isOpen()) {
             return false;
         }
@@ -237,17 +231,22 @@ public class CdshowVideoDevice implements WebcamDeviceExtended {
             return false;
         }
 
-        final int videoWidth = bufferedImage != null ? bufferedImage.getWidth() : resolution.width;
-        final int videoHeight = bufferedImage != null ? bufferedImage.getHeight() : resolution.height;
-        final PixelWriter pixelWriter = writableImage.getPixelWriter();
+        final int videoWidth = Math.round(resolution.width/zoomFactor);
+        final int videoHeight = Math.round(resolution.height/zoomFactor);
+
+        int offsetX = (resolution.width - videoWidth)/2;
+        int offsetY = (resolution.height - videoHeight)/2;
+
+        final PixelWriter pw = writableImage.getPixelWriter();
+
         final int effectiveBytesPerRow = bytesPerRow > 0 ? bytesPerRow : videoWidth * RGB32_BYTES_PER_PIXEL;
         if (effectiveBytesPerRow < videoWidth * RGB32_BYTES_PER_PIXEL) {
             LOG.error("Invalid RGB32 stride for device {}. bytesPerRow={}, width={}", id, effectiveBytesPerRow, videoWidth);
             return false;
         }
-        final ByteBuffer readBuffer = imgBuffer.asReadOnlyBuffer().position(0);
+        final ByteBuffer readBuffer = imgBuffer.asReadOnlyBuffer().position((effectiveBytesPerRow * offsetY) + (getRawFrameBytesPerPixel()*offsetX));
 
-        pixelWriter.setPixels(
+        pw.setPixels(
             0, 0, videoWidth, videoHeight,
             PixelFormat.getByteBgraPreInstance(), readBuffer, effectiveBytesPerRow
         );
